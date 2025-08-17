@@ -1,0 +1,1077 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anemia Prevention - Cegah Anemia Bersama</title>
+    <meta name="description" content="Aplikasi web untuk mencegah anemia dengan tracking makanan kaya zat besi, edukasi, dan reminder harian.">
+    
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#ef4444">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>❤️</text></svg>">
+    
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="Anemia Prevention - Cegah Anemia Bersama">
+    <meta property="og:description" content="Platform digital untuk pencegahan anemia melalui tracking nutrisi dan edukasi kesehatan">
+    <meta property="og:type" content="website">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: white;
+            padding: 1rem 0;
+            box-shadow: 0 4px 20px rgba(239, 68, 68, 0.3);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        
+        .nav-tabs {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        
+        .nav-tab {
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+        
+        .nav-tab:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+        
+        .nav-tab.active {
+            background: rgba(255, 255, 255, 0.3);
+            font-weight: bold;
+        }
+        
+        /* Main Content */
+        .main-content {
+            padding: 2rem 0;
+            min-height: calc(100vh - 140px);
+        }
+        
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.5s ease-in;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* Home Tab Styles */
+        .hero-section {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            background: linear-gradient(135deg, white 0%, #f8fafc 100%);
+        }
+        
+        .hero-title {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .hero-subtitle {
+            font-size: 1.2rem;
+            color: #666;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stat-card {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+        }
+        
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #ef4444, #f59e0b, #10b981);
+        }
+        
+        .stat-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+        
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #ef4444;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-label {
+            font-size: 1.1rem;
+            color: #666;
+            font-weight: 600;
+        }
+        
+        .stat-sublabel {
+            font-size: 0.9rem;
+            color: #999;
+            margin-top: 0.5rem;
+        }
+        
+        .progress-container {
+            margin-top: 1rem;
+        }
+        
+        .progress-bar {
+            height: 10px;
+            background: #f0f0f0;
+            border-radius: 5px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #ef4444, #dc2626);
+            border-radius: 5px;
+            transition: width 0.5s ease;
+            position: relative;
+        }
+        
+        .progress-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            animation: shimmer 2s infinite;
+        }
+        
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        
+        .progress-text {
+            text-align: center;
+            margin-top: 0.5rem;
+            font-weight: 600;
+            color: #666;
+        }
+        
+        .tip-card {
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            color: white;
+            border-radius: 15px;
+            padding: 2rem;
+            margin-top: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .tip-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 100%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: pulse 4s ease-in-out infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.5; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+        }
+        
+        .tip-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .tip-icon {
+            font-size: 2rem;
+        }
+        
+        .tip-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        
+        .tip-text {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            position: relative;
+            z-index: 1;
+        }
+        
+        /* Food Tracker Styles */
+        .search-box {
+            background: white;
+            border-radius: 10px;
+            padding: 1rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .search-input {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+        
+        .search-input:focus {
+            outline: none;
+            border-color: #ef4444;
+            box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+        }
+        
+        .food-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .food-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .food-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+        
+        .food-card.added {
+            background: linear-gradient(135deg, #dcfce7, #bbf7d0);
+            border: 2px solid #10b981;
+        }
+        
+        .food-name {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+        
+        .food-iron {
+            color: #ef4444;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        
+        .food-category {
+            display: inline-block;
+            background: #f3f4f6;
+            color: #6b7280;
+            padding: 0.25rem 0.75rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            margin-bottom: 1rem;
+        }
+        
+        .add-food-btn {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 0.75rem 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            width: 100%;
+        }
+        
+        .add-food-btn:hover {
+            background: linear-gradient(135deg, #dc2626, #b91c1c);
+            transform: translateY(-1px);
+        }
+        
+        .add-food-btn:disabled {
+            background: #d1d5db;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        /* Education Styles */
+        .education-section {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .section-title {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .section-icon {
+            font-size: 2rem;
+        }
+        
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+        
+        .info-card {
+            background: linear-gradient(135deg, #f8fafc, #e2e8f0);
+            border-radius: 10px;
+            padding: 1.5rem;
+            border-left: 4px solid #ef4444;
+        }
+        
+        .info-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 1rem;
+        }
+        
+        .info-list {
+            list-style: none;
+        }
+        
+        .info-list li {
+            padding: 0.5rem 0;
+            color: #666;
+            position: relative;
+            padding-left: 1.5rem;
+        }
+        
+        .info-list li::before {
+            content: '•';
+            color: #ef4444;
+            position: absolute;
+            left: 0;
+            font-weight: bold;
+        }
+        
+        /* Reminders Styles */
+        .reminder-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .reminder-btn {
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+            font-weight: 600;
+        }
+        
+        .reminder-btn:hover {
+            background: linear-gradient(135deg, #1d4ed8, #1e40af);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.3);
+        }
+        
+        .reminders-list {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .reminder-item {
+            background: linear-gradient(135deg, #fef3c7, #fde68a);
+            border-radius: 10px;
+            padding: 1rem 1.5rem;
+            margin-bottom: 1rem;
+            border-left: 4px solid #f59e0b;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .reminder-text {
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .reminder-time {
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: #666;
+        }
+        
+        .empty-state-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .hero-title {
+                font-size: 2rem;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .nav-tabs {
+                justify-content: center;
+            }
+            
+            .food-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        /* Install Button (PWA) */
+        .install-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 1rem 1.5rem;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+            font-weight: 600;
+            display: none;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+        
+        .install-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(16, 185, 129, 0.4);
+        }
+        
+        .install-btn.show {
+            display: block;
+        }
+
+        .toast {
+            position: fixed;
+            top: 100px;
+            right: 20px;
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 8px 25px rgba(16, 185, 129, 0.3);
+            z-index: 10000;
+            font-weight: 600;
+            max-width: 300px;
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+        }
+
+        .toast.show {
+            transform: translateX(0);
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <span>❤️</span>
+                    <span>Anemia Prevention</span>
+                </div>
+                <nav class="nav-tabs">
+                    <button class="nav-tab active" data-tab="home">🏠 Beranda</button>
+                    <button class="nav-tab" data-tab="tracker">📊 Tracker</button>
+                    <button class="nav-tab" data-tab="education">📚 Edukasi</button>
+                    <button class="nav-tab" data-tab="reminders">🔔 Pengingat</button>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+            <!-- Home Tab -->
+            <div id="home" class="tab-content active">
+                <div class="hero-section">
+                    <h1 class="hero-title">Selamat Datang di Anemia Prevention!</h1>
+                    <p class="hero-subtitle">
+                        Platform digital terpercaya untuk mencegah anemia melalui tracking nutrisi, 
+                        edukasi komprehensif, dan reminder yang personal. Mari jaga kesehatan bersama!
+                    </p>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <span class="stat-icon">❤️</span>
+                        <div class="stat-number" id="daily-iron">0.0</div>
+                        <div class="stat-label">mg Zat Besi Hari Ini</div>
+                        <div class="stat-sublabel">Target: 18mg/hari</div>
+                        <div class="progress-container">
+                            <div class="progress-bar">
+                                <div class="progress-fill" id="iron-progress" style="width: 0%"></div>
+                            </div>
+                            <div class="progress-text" id="progress-text">0%</div>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <span class="stat-icon">🍎</span>
+                        <div class="stat-number" id="food-count">0</div>
+                        <div class="stat-label">Makanan Dikonsumsi</div>
+                        <div class="stat-sublabel">Hari ini</div>
+                    </div>
+                </div>
+
+                <div class="tip-card">
+                    <div class="tip-header">
+                        <span class="tip-icon">💡</span>
+                        <div class="tip-title">Tips Hari Ini</div>
+                    </div>
+                    <div class="tip-text" id="daily-tip">
+                        Konsumsi vitamin C bersamaan dengan makanan kaya zat besi untuk meningkatkan penyerapan hingga 3 kali lipat!
+                    </div>
+                </div>
+            </div>
+
+            <!-- Food Tracker Tab -->
+            <div id="tracker" class="tab-content">
+                <div class="search-box">
+                    <input type="text" class="search-input" id="food-search" placeholder="🔍 Cari makanan kaya zat besi...">
+                </div>
+
+                <div class="food-grid" id="food-grid">
+                    <!-- Food items will be populated by JavaScript -->
+                </div>
+            </div>
+
+            <!-- Education Tab -->
+            <div id="education" class="tab-content">
+                <div class="education-section">
+                    <h2 class="section-title">
+                        <span class="section-icon">🩺</span>
+                        Apa itu Anemia?
+                    </h2>
+                    <p style="color: #666; line-height: 1.6; font-size: 1.1rem;">
+                        Anemia adalah kondisi ketika tubuh tidak memiliki cukup sel darah merah sehat 
+                        untuk membawa oksigen yang cukup ke seluruh jaringan tubuh. Di Indonesia, 
+                        prevalensi anemia mencapai 23.7% pada wanita usia reproduksi.
+                    </p>
+                </div>
+
+                <div class="info-grid">
+                    <div class="info-card">
+                        <div class="info-title">⚠️ Gejala Anemia</div>
+                        <ul class="info-list">
+                            <li>Kelelahan dan kelemahan yang berlebihan</li>
+                            <li>Kulit, bibir, dan kuku tampak pucat</li>
+                            <li>Sesak napas saat beraktivitas ringan</li>
+                            <li>Pusing atau sakit kepala</li>
+                            <li>Detak jantung tidak teratur atau cepat</li>
+                            <li>Sulit berkonsentrasi</li>
+                            <li>Kaki dan tangan terasa dingin</li>
+                        </ul>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="info-title">🥩 Makanan Hewani (Mudah Diserap)</div>
+                        <ul class="info-list">
+                            <li>Daging merah (sapi, kambing) - 2.9mg/100g</li>
+                            <li>Hati ayam/sapi - 11mg/100g</li>
+                            <li>Ikan salmon - 1mg/100g</li>
+                            <li>Telur ayam - 1.8mg/butir</li>
+                            <li>Daging ayam - 1.3mg/100g</li>
+                        </ul>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="info-title">🥬 Makanan Nabati</div>
+                        <ul class="info-list">
+                            <li>Bayam - 3.6mg/100g</li>
+                            <li>Kacang merah - 3.9mg/100g</li>
+                            <li>Tahu - 5.4mg/100g</li>
+                            <li>Tempe - 4mg/100g</li>
+                            <li>Oatmeal - 4.7mg/100g</li>
+                            <li>Dark chocolate - 7.3mg/100g</li>
+                        </ul>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="info-title">✅ Tips Pencegahan</div>
+                        <ul class="info-list">
+                            <li>Kombinasikan dengan vitamin C (jeruk, tomat)</li>
+                            <li>Hindari teh/kopi bersamaan dengan makanan</li>
+                            <li>Masak dengan wajan besi</li>
+                            <li>Konsumsi suplemen sesuai anjuran dokter</li>
+                            <li>Perbanyak sayuran hijau dalam menu harian</li>
+                            <li>Periksa kesehatan secara rutin</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Reminders Tab -->
+            <div id="reminders" class="tab-content">
+                <div class="reminder-actions">
+                    <button class="reminder-btn" onclick="addReminder('suplemen')">
+                        💊 Tambah Pengingat Suplemen
+                    </button>
+                    <button class="reminder-btn" onclick="addReminder('makanan')">
+                        🍽️ Tambah Pengingat Makanan
+                    </button>
+                    <button class="reminder-btn" onclick="exportHealthData()">
+                        📊 Export Data Kesehatan
+                    </button>
+                </div>
+
+                <div class="reminders-list">
+                    <h3 style="margin-bottom: 1.5rem; color: #333;">📋 Daftar Pengingat Aktif</h3>
+                    <div id="reminders-container">
+                        <div class="empty-state">
+                            <div class="empty-state-icon">🔔</div>
+                            <p>Belum ada pengingat yang dibuat</p>
+                            <p style="font-size: 0.9rem; color: #999; margin-top: 0.5rem;">
+                                Tap tombol di atas untuk menambah pengingat
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Install Button for PWA -->
+    <button class="install-btn" id="install-btn">
+        📱 Install App
+    </button>
+
+    <script>
+        // App State - Using in-memory storage instead of localStorage
+        let dailyIron = 0;
+        let foodCount = 0;
+        let reminders = [];
+        let addedFoods = [];
+        let usage = {};
+
+        // Food Database
+        const ironFoods = [
+            { name: 'Bayam', iron: 3.6, unit: 'per 100g', category: 'Sayuran' },
+            { name: 'Daging Sapi', iron: 2.9, unit: 'per 100g', category: 'Protein' },
+            { name: 'Hati Ayam', iron: 11.0, unit: 'per 100g', category: 'Protein' },
+            { name: 'Tahu', iron: 5.4, unit: 'per 100g', category: 'Protein' },
+            { name: 'Telur', iron: 1.8, unit: 'per butir', category: 'Protein' },
+            { name: 'Kacang Merah', iron: 3.9, unit: 'per 100g', category: 'Kacang' },
+            { name: 'Ikan Salmon', iron: 1.0, unit: 'per 100g', category: 'Protein' },
+            { name: 'Oatmeal', iron: 4.7, unit: 'per 100g', category: 'Serealia' },
+            { name: 'Tempe', iron: 4.0, unit: 'per 100g', category: 'Protein' },
+            { name: 'Dark Chocolate', iron: 7.3, unit: 'per 100g', category: 'Snack' },
+            { name: 'Kangkung', iron: 2.5, unit: 'per 100g', category: 'Sayuran' },
+            { name: 'Daging Ayam', iron: 1.3, unit: 'per 100g', category: 'Protein' }
+        ];
+
+        const tips = [
+            'Konsumsi vitamin C bersamaan dengan makanan kaya zat besi untuk meningkatkan penyerapan hingga 3 kali lipat!',
+            'Hindari minum teh atau kopi bersamaan dengan makanan kaya zat besi karena dapat menghambat penyerapan.',
+            'Masak dengan wajan besi untuk menambah kandungan zat besi dalam makanan secara alami.',
+            'Kombinasikan makanan hewani dan nabati untuk mendapatkan zat besi yang optimal bagi tubuh.',
+            'Konsumsi buah-buahan sitrus seperti jeruk dan lemon untuk meningkatkan penyerapan zat besi.',
+            'Hindari konsumsi produk susu bersamaan dengan makanan kaya zat besi karena kalsium menghambat penyerapan.',
+            'Perbanyak sayuran berdaun hijau gelap dalam menu harian untuk asupan zat besi yang konsisten.',
+            'Rendam kacang-kacangan semalam sebelum dimasak untuk meningkatkan bioavailabilitas zat besi.',
+            'Konsumsi suplemen zat besi dengan perut kosong untuk penyerapan maksimal, kecuali ada gangguan lambung.'
+        ];
+
+        // Initialize App
+        document.addEventListener('DOMContentLoaded', function() {
+            updateHomeStats();
+            renderFoodGrid();
+            renderReminders();
+            setRandomTip();
+            initializeTabs();
+        });
+
+        // Tab Navigation
+        function initializeTabs() {
+            const tabs = document.querySelectorAll('.nav-tab');
+            const contents = document.querySelectorAll('.tab-content');
+
+            tabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    const target = this.getAttribute('data-tab');
+                    
+                    // Remove active classes
+                    tabs.forEach(t => t.classList.remove('active'));
+                    contents.forEach(c => c.classList.remove('active'));
+                    
+                    // Add active classes
+                    this.classList.add('active');
+                    document.getElementById(target).classList.add('active');
+                    
+                    // Update content based on tab
+                    if (target === 'home') {
+                        updateHomeStats();
+                    } else if (target === 'tracker') {
+                        renderFoodGrid();
+                    } else if (target === 'reminders') {
+                        renderReminders();
+                    }
+                });
+            });
+        }
+
+        // Update Home Statistics
+        function updateHomeStats() {
+            document.getElementById('daily-iron').textContent = dailyIron.toFixed(1);
+            document.getElementById('food-count').textContent = foodCount;
+            
+            const progressPercentage = Math.min((dailyIron / 18) * 100, 100);
+            document.getElementById('iron-progress').style.width = progressPercentage + '%';
+            document.getElementById('progress-text').textContent = Math.round(progressPercentage) + '%';
+        }
+
+        // Set Random Tip
+        function setRandomTip() {
+            const randomIndex = Math.floor(Math.random() * tips.length);
+            document.getElementById('daily-tip').textContent = tips[randomIndex];
+        }
+
+        // Render Food Grid
+        function renderFoodGrid() {
+            const foodGrid = document.getElementById('food-grid');
+            const searchInput = document.getElementById('food-search');
+            
+            function displayFoods(foods) {
+                foodGrid.innerHTML = '';
+                
+                foods.forEach((food, index) => {
+                    const isAdded = addedFoods.some(f => f.name === food.name);
+                    const foodCard = document.createElement('div');
+                    foodCard.className = `food-card ${isAdded ? 'added' : ''}`;
+                    
+                    foodCard.innerHTML = `
+                        <div class="food-name">${food.name}</div>
+                        <div class="food-iron">${food.iron}mg zat besi ${food.unit}</div>
+                        <div class="food-category">${food.category}</div>
+                        <button class="add-food-btn" onclick="addFood(${index})" ${isAdded ? 'disabled' : ''}>
+                            ${isAdded ? '✅ Sudah Ditambahkan' : '+ Tambah ke Log Harian'}
+                        </button>
+                    `;
+                    
+                    foodGrid.appendChild(foodCard);
+                });
+            }
+            
+            // Initial display
+            displayFoods(ironFoods);
+            
+            // Search functionality
+            searchInput.addEventListener('input', function() {
+                const searchTerm = this.value.toLowerCase();
+                const filteredFoods = ironFoods.filter(food => 
+                    food.name.toLowerCase().includes(searchTerm) ||
+                    food.category.toLowerCase().includes(searchTerm)
+                );
+                displayFoods(filteredFoods);
+            });
+        }
+
+        // Add Food to Daily Log
+        function addFood(index) {
+            const food = ironFoods[index];
+            
+            // Update stats
+            dailyIron += food.iron;
+            foodCount += 1;
+            
+            // Add to added foods list
+            const foodWithTimestamp = {
+                ...food,
+                timestamp: new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })
+            };
+            addedFoods.push(foodWithTimestamp);
+            
+            // Update UI
+            updateHomeStats();
+            renderFoodGrid();
+            
+            // Show success message
+            showToast(`${food.name} berhasil ditambahkan! +${food.iron}mg zat besi`);
+            
+            // Track usage
+            trackUsage('add_food');
+        }
+
+        // Add Reminder
+        function addReminder(type) {
+            const reminderText = type === 'suplemen' ? 
+                'Minum suplemen zat besi' : 
+                'Makan makanan kaya zat besi';
+                
+            const newReminder = {
+                id: Date.now(),
+                text: reminderText,
+                type: type,
+                time: new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }),
+                date: new Date().toLocaleDateString('id-ID'),
+                active: true
+            };
+            
+            reminders.push(newReminder);
+            renderReminders();
+            
+            showToast(`Pengingat ${type} berhasil ditambahkan!`);
+            trackUsage('add_reminder');
+        }
+
+        // Render Reminders
+        function renderReminders() {
+            const container = document.getElementById('reminders-container');
+            
+            if (reminders.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">🔔</div>
+                        <p>Belum ada pengingat yang dibuat</p>
+                        <p style="font-size: 0.9rem; color: #999; margin-top: 0.5rem;">
+                            Tap tombol di atas untuk menambah pengingat
+                        </p>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = '';
+            reminders.forEach(reminder => {
+                const reminderElement = document.createElement('div');
+                reminderElement.className = 'reminder-item';
+                reminderElement.innerHTML = `
+                    <div>
+                        <div class="reminder-text">
+                            ${reminder.type === 'suplemen' ? '💊' : '🍽️'} ${reminder.text}
+                        </div>
+                        <div class="reminder-time">
+                            Ditambahkan: ${reminder.date} ${reminder.time}
+                        </div>
+                    </div>
+                    <button onclick="removeReminder(${reminder.id})" style="background: #ef4444; color: white; border: none; border-radius: 5px; padding: 0.5rem; cursor: pointer;">
+                        🗑️
+                    </button>
+                `;
+                container.appendChild(reminderElement);
+            });
+        }
+
+        // Remove Reminder
+        function removeReminder(id) {
+            reminders = reminders.filter(reminder => reminder.id !== id);
+            renderReminders();
+            showToast('Pengingat berhasil dihapus!');
+        }
+
+        // Show Toast Notification
+        function showToast(message) {
+            // Remove existing toast
+            const existingToast = document.querySelector('.toast');
+            if (existingToast) {
+                existingToast.remove();
+            }
+            
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.textContent = message;
+            
+            document.body.appendChild(toast);
+            
+            // Animate in
+            setTimeout(() => {
+                toast.classList.add('show');
+            }, 100);
+            
+            // Animate out and remove
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => {
+                    if (toast.parentNode) {
+                        toast.parentNode.removeChild(toast);
+                    }
+                }, 300);
+            }, 3000);
+        }
+
+        // Analytics and Usage Tracking
+        function trackUsage(action, details = {}) {
+            const today = new Date().toDateString();
+            
+            if (!usage[today]) {
+                usage[today] = {};
+            }
+            
+            if (!usage[today][action]) {
+                usage[today][action] = 0;
+            }
+            
+            usage[today][action]++;
+        }
+
+        // Export Data for Healthcare
+        function exportHealthData() {
+            const data = {
+                dailyIron,
+                foodCount,
+                addedFoods,
+                reminders,
+                exportDate: new Date().toISOString(),
+                usage: usage
+            };
+            
+            const dataStr = JSON.stringify(data, null, 2);
+            const dataBlob = new Blob([dataStr], {type: 'application/json'});
+            const url = URL.createObjectURL(dataBlob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `anemia-prevention-data-${new Date().toISOString().split('T')[0]}.json`;
+            link.click();
+            URL.revokeObjectURL(url);
+            
+            showToast('Data kesehatan berhasil diekspor!');
+            trackUsage('export_data');
+        }
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            if (e.altKey) {
+                switch(e.key) {
+                    case '1':
+                        document.querySelector('[data-tab="home"]').click();
+                        break;
+                    case '2':
+                        document.querySelector('[data-tab="tracker"]').click();
+                        break;
+                    case '3':
+                        document.querySelector('[data-tab="education"]').click();
+                        break;
+                    case '4':
+                        document.querySelector('[data-tab="reminders"]').click();
+                        break;
+                }
+            }
+        });
+    </script>
+</body>
+</html>
